@@ -14,28 +14,27 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class Adapter(private val context: Context, private val quotesList: ArrayList<DataClass>) :
-    RecyclerView.Adapter<Adapter.ViewHolder>() {
-    private lateinit var viewModel: MainViewModel
+class Adapter(
+    private val context: Context,
+    private val quotesList: ArrayList<Quotes>,
+    private val viewModel: MainViewModel
+) : RecyclerView.Adapter<Adapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val quotes = LayoutInflater.from(context).inflate(R.layout.rvitem, parent, false)
-        return Adapter.ViewHolder(quotes)
-
-//        viewModel = ViewModelProvider(ViewModelStoreOwner(::ViewModelStore))[MainViewModel::class.java]
-
-
+        return ViewHolder(quotes)
     }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.data.collect { data ->
-                holder.Id.text =data.quotes[position].id.toString()
-                holder.Quote.text = data.quotes[position].quote.toString()
-                holder.Author.text = data.quotes[position].author.toString()
+                holder.Id.text = data[position].id.toString()
+                holder.Quote.text = data[position].quote.toString()
+                holder.Author.text = data[position].author.toString()
 
             }
         }
-
     }
 
     override fun getItemCount(): Int {
